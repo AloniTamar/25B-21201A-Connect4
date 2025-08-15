@@ -20,11 +20,18 @@
         public int Column { get; set; } // 0..6
     }
 
+    public class MoveInfo
+    {
+        public string player { get; set; } = string.Empty; // "Human" or "Server"
+        public int col { get; set; }
+        public int row { get; set; }
+    }
+
     public class MoveResponse
     {
         public int[][] Board { get; set; } = [];
         public string Status { get; set; } = string.Empty; // Playing|Won|Lost|Draw
-        public object? LastMove { get; set; }
-        public object? ServerReplyMove { get; set; }
+        public MoveInfo? LastMove { get; set; }
+        public MoveInfo? ServerReplyMove { get; set; }
     }
 }

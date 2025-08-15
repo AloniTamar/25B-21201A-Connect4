@@ -104,6 +104,9 @@ public class MovesController : ControllerBase
             };
             _db.Moves.Add(serverMove);
 
+            // set the server reply in the response immediately
+            response.ServerReplyMove = new { player = "Server", col = serverCol, row = serverRow };
+
             // Check outcome after server move
             if (GameLogic.CheckWin(board, serverRow, serverCol, player: 2))
             {
@@ -114,7 +117,6 @@ public class MovesController : ControllerBase
                 await _db.SaveChangesAsync();
                 response.Status = "Lost";
                 response.LastMove = new { player = "Human", col = humanCol, row = humanRow };
-                response.ServerReplyMove = new { player = "Server", col = serverCol, row = serverRow };
                 return Ok(response);
             }
         }
