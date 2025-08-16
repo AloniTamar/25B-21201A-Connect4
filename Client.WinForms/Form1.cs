@@ -1,8 +1,3 @@
-using System;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using System.Collections.Generic;
 using Client.WinForms.Data;
 using Client.WinForms.Models;
 using Client.WinForms.Services;
@@ -18,7 +13,7 @@ namespace Client.WinForms
 
         private readonly ApiClient _api = new ApiClient("http://localhost:5221");
 
-        private int _playerId = 1;       // TODO: wire to real login later
+        private int _playerId = 1;       // TODO: wire to real login
         private int _gameId = -1;
         private int[][] _board = EmptyBoard();
         private Rectangle[,] _cells = new Rectangle[0, 0];
@@ -37,6 +32,7 @@ namespace Client.WinForms
         private readonly Label _lblStatus = new() { AutoSize = true, Text = "Status: —" };
         private readonly Label _lblError = new() { AutoSize = true, ForeColor = Color.Red, Text = "" };
         private readonly ComboBox _cmbReplays = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 280 };
+        private readonly Button _btnExitReplay = new() { Text = "Exit Replay", AutoSize = true, Enabled = false };
 
         private ReplayGame? _replay;      // current replay being recorded
         private int _turnIndex = 0;       // increases after each committed move
@@ -72,6 +68,14 @@ namespace Client.WinForms
         private List<ReplayMove> _replayMoves = new();
         private int _replayIndex = 0;
         private readonly System.Windows.Forms.Timer _replayTimer = new() { Interval = 600 }; // ms per move
+
+        // --- replay animation state (separate from live animation) ---
+        private bool _repAnimActive = false;
+        private int _repAnimCol = -1;
+        private int _repAnimRowTarget = -1;
+        private int _repAnimYpx = 0;
+        private bool _repAnimCommitNeeded = false;
+        private int _repPauseTicks = 0;
 
         private class ReplayChoice
         {
@@ -151,6 +155,8 @@ namespace Client.WinForms
             _srvAnimCol = -1;
             _srvAnimRowTarget = -1;
 
+            _btnExitReplay.Enabled = false;
+
             // Clear highlights right away
             _lastHuman = new Point(-1, -1);
             _lastServer = new Point(-1, -1);
@@ -210,6 +216,7 @@ namespace Client.WinForms
 
                 _cmbReplays.BeginUpdate();
                 _cmbReplays.Items.Clear();
+
                 foreach (var it in items)
                 {
                     var dur = it.DurationSec > 0 ? $" • {it.DurationSec}s" : "";
@@ -217,19 +224,20 @@ namespace Client.WinForms
                     var text = $"#{it.GameId} • {it.StartedAt:g} • {it.Moves} moves{dur}{res}";
                     _cmbReplays.Items.Add(new ReplayChoice { Id = it.Id, Text = text });
                 }
+
                 _cmbReplays.EndUpdate();
 
-                // keep UX simple: select newest if list not empty
-                if (_cmbReplays.Items.Count > 0 && _cmbReplays.SelectedIndex < 0)
-                    _cmbReplays.SelectedIndex = 0;
-
-                _btnReplays.Enabled = _cmbReplays.SelectedIndex >= 0;
+                // start clean: nothing selected, buttons disabled
+                _cmbReplays.SelectedIndex = -1;
+                _btnReplays.Enabled = false;
+                _btnExitReplay.Enabled = false;
             }
             catch (Exception ex)
             {
                 ShowError("Failed to refresh replays: " + ex.Message);
             }
         }
+
 
         // Saves the current replay to the database
         private void SaveReplay(string endStatus)
@@ -282,6 +290,7 @@ namespace Client.WinForms
             _btnReplays.Click += (s, e) =>
             {
                 if (_cmbReplays.SelectedItem is not ReplayChoice choice) return;
+                _btnExitReplay.Enabled = true;
 
                 try
                 {
@@ -331,47 +340,60 @@ namespace Client.WinForms
 
             Controls.Add(_cmbReplays);
 
-            // Buttons (top row)
-            _btnNew.Location = new Point(_margin, _margin);
-            _btnReplays.Location = new Point(_btnNew.Right + 12, _margin);
-
-            // Combo to the right of Replays (top row)
-            _cmbReplays.Location = new Point(_btnReplays.Right + 12, _margin - 2);
             Controls.Add(_cmbReplays);
 
-            // Status on the next row; Error below it
-            _lblStatus.Location = new Point(_margin, _btnNew.Bottom + 8);
-            _lblError.Location = new Point(_margin, _lblStatus.Bottom + 6);
+            Controls.Add(_btnExitReplay);
 
+            // --- layout constants ---
+            int rowGap = 8;
+            int colGap = 12;
+
+            // ROW 1: Create Game + Status + Error
+            _btnNew.Location = new Point(_margin, _margin);
+            _lblStatus.Location = new Point(_btnNew.Right + colGap, _margin + 4);
+            _lblError.Location = new Point(_lblStatus.Right + colGap, _margin + 4);
+
+            // ROW 2: Replay section (Replay > Exit Replay > ComboBox)
+            int row2Y = _btnNew.Bottom + rowGap;
+            _btnReplays.Location = new Point(_margin, row2Y);
+            _btnExitReplay.Location = new Point(_btnReplays.Right + colGap, row2Y);
+            _cmbReplays.Location = new Point(_btnExitReplay.Right + colGap, row2Y - 2);
+
+            _btnExitReplay.Click += (s, e) =>
+            {
+                // stop any replay activity
+                _replayTimer.Stop();
+                _mode = AppMode.Live;
+
+                // clear board + UI state
+                _board = EmptyBoard();
+                _lastHuman = new Point(-1, -1);
+                _lastServer = new Point(-1, -1);
+                _hoverCol = -1;
+                Invalidate();
+
+                // reset replay picker
+                _cmbReplays.SelectedIndex = -1;
+                _btnReplays.Enabled = false;
+                _btnExitReplay.Enabled = false;
+                _cmbReplays.Enabled = true;
+
+                // allow starting a fresh live game
+                _btnNew.Enabled = true;
+
+                ShowError("");
+                SetStatusText("Start new game or select a replay or create a new game.");
+            };
 
             _cmbReplays.Items.Clear();
-            try
+            // keep the selection-changed hook so the button enables only when a replay is chosen
+            _cmbReplays.SelectedIndexChanged += (s, e) =>
             {
-                using var db = new Client.WinForms.Data.ReplayDbContext();
-                db.Database.EnsureCreated();
+                _btnReplays.Enabled = _cmbReplays.SelectedIndex >= 0;
+            };
 
-                var items = db.ReplayGames
-                              .Where(g => g.PlayerId == _playerId)
-                              .OrderByDescending(g => g.StartedAt)
-                              .Select(g => new
-                              {
-                                  g.Id,
-                                  g.GameId,
-                                  g.StartedAt,
-                                  Moves = g.Moves.Count
-                              })
-                              .ToList();
-
-                foreach (var it in items)
-                {
-                    var text = $"#{it.GameId} • {it.StartedAt:g} • {it.Moves} moves";
-                    _cmbReplays.Items.Add(new ReplayChoice { Id = it.Id, Text = text });
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowError("Failed to load replays: " + ex.Message);
-            }
+            // now populate using the helper that includes DurationSec & Result
+            RefreshReplayCombo();
 
             // Disable Replays button if nothing to play or nothing selected
             _btnReplays.Enabled = _cmbReplays.Items.Count > 0 && _cmbReplays.SelectedIndex >= 0;
@@ -518,22 +540,98 @@ namespace Client.WinForms
                 }
             };
 
+            _replayTimer.Interval = 16; // 60 FPS
             _replayTimer.Tick += (s, e) =>
-{
-    // stop when finished
-    if (_replayIndex >= _replayMoves.Count)
-    {
-        _replayTimer.Stop();
-        SetStatusText("Replay finished.");
-        _btnNew.Enabled = true; // allow starting a new live game after replay
-        return;
-    }
+            {
+                int boardTop = _margin * 2 + 40;
 
-    // apply next move instantly (no falling yet)
-    var m = _replayMoves[_replayIndex++];
-    _board[m.Row][m.Column] = (m.Player == ReplayPlayerKind.Human) ? 1 : 2;
-    Invalidate();
-};
+                // finished?
+                if (_replayIndex >= _replayMoves.Count && !_repAnimActive && _repPauseTicks <= 0)
+                {
+                    _replayTimer.Stop();
+
+                    _btnExitReplay.Enabled = false;
+                    _btnReplays.Enabled = _cmbReplays.SelectedIndex >= 0;
+                    _cmbReplays.Enabled = true;
+                    _btnNew.Enabled = true;
+
+                    // optional: status summary
+                    SetStatusText("Replay finished.");
+                    return;
+                }
+
+                // pause between moves
+                if (_repPauseTicks > 0)
+                {
+                    _repPauseTicks--;
+                    Invalidate();
+                    return;
+                }
+
+                // active falling disc?
+                if (_repAnimActive)
+                {
+                    _repAnimYpx += 18; // fall speed
+                    int targetYpx = boardTop + _repAnimRowTarget * _cell + (_cell / 2);
+
+                    if (_repAnimYpx >= targetYpx)
+                    {
+                        if (_repAnimCommitNeeded)
+                        {
+                            // commit the piece to the board (no recording!)
+                            var lastMove = _replayMoves[_replayIndex - 1];
+                            _board[_repAnimRowTarget][_repAnimCol] = (lastMove.Player == ReplayPlayerKind.Human) ? 1 : 2;
+
+                            // update last-move highlights to match colors
+                            if (lastMove.Player == ReplayPlayerKind.Human)
+                                _lastHuman = new Point(_repAnimCol, _repAnimRowTarget);
+                            else
+                                _lastServer = new Point(_repAnimCol, _repAnimRowTarget);
+
+                            _repAnimCommitNeeded = false;
+                        }
+                        _repAnimActive = false;
+
+                        // short pause before next move
+                        _repPauseTicks = 30; // ~0.5s
+                    }
+
+                    Invalidate();
+                    return;
+                }
+
+                // start next move if any
+                if (_replayIndex < _replayMoves.Count)
+                {
+                    var m = _replayMoves[_replayIndex++];
+
+                    // find lowest empty row in that column
+                    int landedRow = -1;
+                    for (int r = _rows - 1; r >= 0; r--)
+                    {
+                        if (_board[r][m.Column] == 0)
+                        {
+                            landedRow = r;
+                            break;
+                        }
+                    }
+                    if (landedRow < 0)
+                    {
+                        // column full (shouldn't happen in saved games) -> skip
+                        return;
+                    }
+
+                    // set replay animation state
+                    _repAnimActive = true;
+                    _repAnimCol = m.Column;
+                    _repAnimRowTarget = landedRow;
+                    _repAnimYpx = boardTop - (_cell / 2);
+                    _repAnimCommitNeeded = true;
+
+                    Invalidate();
+                    return;
+                }
+            };
 
             // Mouse click to drop a disc
             MouseDown += Form1_MouseDown;
@@ -768,7 +866,7 @@ namespace Client.WinForms
                     e.Graphics.DrawEllipse(penHuman, hx - 3, hy - 3, _cell - 12 + 6, _cell - 12 + 6);
             }
 
-            // Server last-move ring (light blue)
+            // Server last-move ring (light-blue)
             if (_lastServer.X >= 0 && _lastServer.Y >= 0)
             {
                 int sx = boardLeft + _lastServer.X * _cell + 6;
@@ -804,6 +902,16 @@ namespace Client.WinForms
                         g.DrawEllipse(pen, x, y, _cell - 12, _cell - 12);
                     }
                 }
+            }
+
+            // overlay: replay falling disc (when in Replay mode)
+            if (_mode == AppMode.Replay && _repAnimActive && _repAnimCol >= 0 && _repAnimRowTarget >= 0 && _replayIndex > 0)
+            {
+                var current = _replayMoves[_replayIndex - 1];
+                int x = _margin + _repAnimCol * _cell + 6;
+                int y = _repAnimYpx - (_cell / 2) + 6;
+                var brush = (current.Player == ReplayPlayerKind.Human) ? Brushes.Red : Brushes.Blue;
+                e.Graphics.FillEllipse(brush, x, y, _cell - 12, _cell - 12);
             }
         }
 
