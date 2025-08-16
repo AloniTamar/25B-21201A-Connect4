@@ -10,7 +10,7 @@ namespace Client.WinForms.Services
         private readonly HttpClient _http;
 
         // TODO: set your server base URL here (HTTP for now)
-        public ApiClient(string baseUrl = "http://localhost:5080")
+        public ApiClient(string baseUrl = "http://localhost:5221")
         {
             _http = new HttpClient { BaseAddress = new System.Uri(baseUrl) };
         }
