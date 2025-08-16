@@ -1,0 +1,30 @@
+﻿@page "{id:int}"
+@model Server.Pages.Admin.Players.DeleteModel
+@{
+    ViewData["Title"] = "Delete Player";
+}
+<div class="container mt-4">
+    <h2>Delete Player</h2>
+
+    @if (Model.Summary is null)
+    {
+        <div class="alert alert-danger">Player not found.</div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <strong>Warning:</strong> This will permanently delete
+            player <strong>@Model.Summary.Name</strong> (ID @Model.Summary.Id),
+            <strong>@Model.Summary.GamesCount</strong> game(s) and
+            <strong>@Model.Summary.MovesCount</strong> move(s). This cannot be undone.
+        </div>
+        <div class="mb-3">
+            <a class="btn btn-outline-secondary" asp-page="/Players/Index">← Back to Players</a>
+        </div>
+        <form method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Delete permanently</button>
+            <a asp-page="/Queries/Players/Index" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    }
+</div>

@@ -1,0 +1,19 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@model Server.Pages.Queries.Stats.GroupsByGamesModel
+@{
+    ViewData["Title"] = "Players grouped by games played";
+}
+
+<div class="container mt-4">
+    <h2>Players grouped by games played</h2>
+
+    @await Html.PartialAsync("_PlayersTable", Model.G3, new ViewDataDictionary(ViewData) { ["Heading"] = "Three or more games" })
+    @await Html.PartialAsync("_PlayersTable", Model.G2, new ViewDataDictionary(ViewData) { ["Heading"] = "Two games" })
+    @await Html.PartialAsync("_PlayersTable", Model.G1, new ViewDataDictionary(ViewData) { ["Heading"] = "One game" })
+    @await Html.PartialAsync("_PlayersTable", Model.G0, new ViewDataDictionary(ViewData) { ["Heading"] = "No games" })
+
+    <div class="mt-3">
+        <a class="btn btn-outline-secondary" asp-page="/Games/Index">← Back to Games</a>
+    </div>
+</div>

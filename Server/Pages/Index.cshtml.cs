@@ -1,19 +1,18 @@
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Server.Pages;
-
-public class IndexModel : PageModel
+namespace Server.Pages
 {
-    private readonly ILogger<IndexModel> _logger;
-
-    public IndexModel(ILogger<IndexModel> logger)
+    public class IndexModel : PageModel
     {
-        _logger = logger;
-    }
+        public bool IsLoggedIn { get; private set; }
+        public string? PlayerName { get; private set; }
 
-    public void OnGet()
-    {
-
+        public void OnGet()
+        {
+            var id = HttpContext.Session.GetInt32("PlayerId");
+            IsLoggedIn = id.HasValue;
+            PlayerName = HttpContext.Session.GetString("PlayerName");
+        }
     }
 }

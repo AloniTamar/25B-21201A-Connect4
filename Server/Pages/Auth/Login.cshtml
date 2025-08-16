@@ -1,0 +1,29 @@
+﻿@page
+@model Server.Pages.Auth.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="container mt-4">
+    <h2>Login</h2>
+
+    <form method="post" class="row g-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="col-md-4">
+            <label asp-for="Input.UniqueNumber" class="form-label"></label>
+            <input asp-for="Input.UniqueNumber" class="form-control" />
+            <span asp-validation-for="Input.UniqueNumber" class="text-danger"></span>
+        </div>
+
+        <input type="hidden" asp-for="Input.Next" />
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Login</button>
+            <a asp-page="/Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

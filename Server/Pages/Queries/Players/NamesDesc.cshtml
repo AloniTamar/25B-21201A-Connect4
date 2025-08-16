@@ -1,0 +1,30 @@
+﻿@page
+@model Server.Pages.Queries.Players.NamesDescModel
+@{
+    ViewData["Title"] = "Players – Names (DESC, case-sensitive)";
+}
+
+<div class="container mt-4">
+    <h2>Players – Names (DESC, case-sensitive) &amp; Last Game Date</h2>
+    <table class="table table-striped table-sm w-auto">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Last Game Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.Items)
+            {
+                <tr>
+                    <td>@r.Name</td>
+                    <td>@(r.LastGameDate?.ToString("g") ?? "-")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mb-3">
+        <a class="btn btn-outline-secondary" asp-page="/Players/Index">← Back to Players</a>
+    </div>
+</div>

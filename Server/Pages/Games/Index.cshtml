@@ -1,0 +1,74 @@
+﻿@page
+@{
+    ViewData["Title"] = "Games";
+}
+<div class="container mt-4">
+    <h2 class="mb-4">Games</h2>
+
+    <div class="row g-3">
+        <!-- Full list -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Full List</h5>
+                    <p class="card-text text-muted">All games with details. Newest first.</p>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" asp-page="/Queries/Games/All">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Distinct area -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Distinct (one per player)</h5>
+                    <p class="card-text text-muted">Latest game per player based on start time.</p>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" asp-page="/Queries/Games/Distinct">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games by player -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Games by Player</h5>
+                    <p class="card-text text-muted">Pick a player to see their games.</p>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" asp-page="/Queries/Games/ByPlayer">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games per player -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Games per Player</h5>
+                    <p class="card-text text-muted">Count of games per player, sorted by count desc.</p>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" asp-page="/Queries/Stats/GamesPerPlayer">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Players by games -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Players by Games</h5>
+                    <p class="card-text text-muted">Grouped into 3+, 2, 1, and 0 games.</p>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" asp-page="/Queries/Stats/GroupsByGames">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

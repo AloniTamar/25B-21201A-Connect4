@@ -1,0 +1,47 @@
+﻿@page
+@model Server.Pages.Queries.Games.AllModel
+@{
+    ViewData["Title"] = "Games – Full Details";
+}
+<div class="container mt-4">
+    <h2>Games – Full Details</h2>
+
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>PlayerId</th>
+                <th>Player</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Duration (s)</th>
+                <th>Result</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in Model.Items)
+            {
+                <tr>
+                    <td>@g.Id</td>
+                    <td>@g.PlayerId</td>
+                    <td>@g.PlayerName</td>
+                    <td>@g.StartTime.ToString("g")</td>
+                    <td>@(g.EndTime?.ToString("g") ?? "-")</td>
+                    <td>@(g.DurationSec?.ToString() ?? "-")</td>
+                    <td>@g.Result</td>
+                    <td>@g.Notes</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-danger"
+                           asp-page="/Admin/Games/Delete" asp-route-id="@g.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mb-3">
+        <a class="btn btn-outline-secondary" asp-page="/Games/Index">← Back to Games</a>
+    </div>
+</div>

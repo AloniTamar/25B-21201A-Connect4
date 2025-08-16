@@ -1,0 +1,44 @@
+﻿@page "{id:int}"
+@model Server.Pages.Admin.Games.DeleteModel
+@{
+    ViewData["Title"] = "Delete Game";
+}
+<div class="container mt-4">
+    <h2>Delete Game</h2>
+
+    @if (Model.Summary is null)
+    {
+        <div class="alert alert-danger">Game not found.</div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <strong>Warning:</strong> This will permanently delete game
+            <strong>#@Model.Summary.Id</strong> for player
+            <strong>@Model.Summary.PlayerName</strong> (ID @Model.Summary.PlayerId),
+            including <strong>@Model.Summary.MovesCount</strong> move(s).
+            This cannot be undone.
+        </div>
+
+        <div class="mb-3">
+            <a class="btn btn-outline-secondary" asp-page="/Games/Index">← Back to Games</a>
+        </div>
+
+        <dl class="row">
+            <dt class="col-sm-3">Result</dt>
+            <dd class="col-sm-9">@Model.Summary.Result</dd>
+            <dt class="col-sm-3">Start</dt>
+            <dd class="col-sm-9">@Model.Summary.StartTime.ToString("g")</dd>
+            <dt class="col-sm-3">End</dt>
+            <dd class="col-sm-9">@(@Model.Summary.EndTime?.ToString("g") ?? "-")</dd>
+            <dt class="col-sm-3">Duration (s)</dt>
+            <dd class="col-sm-9">@(@Model.Summary.DurationSec?.ToString() ?? "-")</dd>
+        </dl>
+
+        <form method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Delete permanently</button>
+            <a asp-page="/Queries/Games/All" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    }
+</div>

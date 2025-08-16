@@ -1,0 +1,48 @@
+﻿@page
+@{
+    ViewData["Title"] = "Players";
+}
+<div class="container mt-4">
+    <h2 class="mb-4">Players</h2>
+
+    <div class="row g-3">
+        <!-- Admin information card → Players (full) -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Admin – Players (Full)</h5>
+                    <p class="card-text text-muted">View all player details with sorting. Includes edit & delete actions.</p>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" asp-page="/Queries/Players/Index">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games information card → Players (name, CS) -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Players (Name ↓, Case-Sensitive)</h5>
+                    <p class="card-text text-muted">Names only, sorted descending (case-sensitive) with last game date.</p>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" asp-page="/Queries/Players/NamesDesc">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Players by country -->
+        <div class="col-sm-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Players by Country</h5>
+                    <p class="card-text text-muted">Group players per country; includes players with zero games.</p>
+                    <div class="mt-auto">
+                        <a class="btn btn-primary w-100" asp-page="/Queries/Stats/ByCountry">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

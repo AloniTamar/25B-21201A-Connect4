@@ -1,0 +1,61 @@
+﻿@page
+@model Server.Pages.Queries.Games.ByPlayerModel
+@{
+    ViewData["Title"] = "Games by Player";
+}
+<div class="container mt-4">
+  <h2>Games by Player</h2>
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-auto">
+            <select asp-for="PlayerId" asp-items="Model.PlayerOptions" class="form-select" onchange="this.form.submit()">
+                <option value="">-- choose player --</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit">Show</button>
+        </div>
+    </form>
+
+  @if (Model.SelectedPlayerId.HasValue)
+  {
+    <h5 class="mb-3">Player: @Model.PlayerName (@Model.SelectedPlayerId)</h5>
+
+    @if (Model.Items.Count == 0)
+    {
+      <div class="alert alert-info">No games for this player.</div>
+    }
+    else
+    {
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>GameId</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Duration (s)</th>
+            <th>Result</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+        @foreach (var g in Model.Items)
+        {
+          <tr>
+            <td>@g.Id</td>
+            <td>@g.StartTime.ToString("g")</td>
+            <td>@(g.EndTime?.ToString("g") ?? "-")</td>
+            <td>@(g.DurationSec?.ToString() ?? "-")</td>
+            <td>@g.Result</td>
+            <td>@g.Notes</td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  }
+
+    <div class="mb-3">
+        <a class="btn btn-outline-secondary" asp-page="/Games/Index">← Back to Games</a>
+    </div>
+</div>

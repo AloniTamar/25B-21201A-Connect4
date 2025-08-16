@@ -1,0 +1,50 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Server.Pages.Auth.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+<div class="container mt-4">
+    <h2>Register</h2>
+
+    <form method="post" class="row g-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="col-md-3">
+            <label asp-for="Input.UniqueNumber" class="form-label"></label>
+            <input asp-for="Input.UniqueNumber" class="form-control" />
+            <div class="form-text">Choose a unique number between 1-1000.</div>
+            <span asp-validation-for="Input.UniqueNumber" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-5">
+            <label asp-for="Input.FirstName" class="form-label"></label>
+            <input asp-for="Input.FirstName" class="form-control" />
+            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="Input.Phone" class="form-label"></label>
+            <input asp-for="Input.Phone" class="form-control" />
+            <span asp-validation-for="Input.Phone" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="Input.Country" class="form-label"></label>
+            <select asp-for="Input.Country" asp-items="Model.CountryOptions" class="form-select">
+                <option value="">-- Select country --</option>
+            </select>
+            <span asp-validation-for="Input.Country" class="text-danger"></span>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Register</button>
+            <a asp-page="/Index" class="btn btn-outline-secondary">Cancel</a>
+            <a asp-page="/Auth/Login" class="btn btn-link">Already have an account? Login</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

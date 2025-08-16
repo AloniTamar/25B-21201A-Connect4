@@ -1,0 +1,49 @@
+﻿@page "{id:int}"
+@model Server.Pages.Admin.Players.EditModel
+@{
+    ViewData["Title"] = "Edit Player";
+}
+<div class="container mt-4">
+    <h2>Edit Player</h2>
+    <div class="mb-3">
+        <a class="btn btn-outline-secondary" asp-page="/Players/Index">← Back to Players</a>
+    </div>
+    <form method="post" class="row g-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Input.Id" />
+
+        <div class="col-md-3">
+            <label asp-for="Input.UniqueNumber" class="form-label"></label>
+            <input asp-for="Input.UniqueNumber" class="form-control" />
+            <span asp-validation-for="Input.UniqueNumber" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="Input.FirstName" class="form-label"></label>
+            <input asp-for="Input.FirstName" class="form-control" />
+            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label asp-for="Input.Phone" class="form-label"></label>
+            <input asp-for="Input.Phone" class="form-control" />
+            <span asp-validation-for="Input.Phone" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="Input.Country" class="form-label"></label>
+            <input asp-for="Input.Country" class="form-control" />
+            <span asp-validation-for="Input.Country" class="text-danger"></span>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-page="/Queries/Players/Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
