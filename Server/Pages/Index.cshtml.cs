@@ -7,11 +7,12 @@ namespace Server.Pages
     {
         public bool IsLoggedIn { get; private set; }
         public string? PlayerName { get; private set; }
+        public int? PlayerId { get; private set; }
 
         public void OnGet()
         {
-            var id = HttpContext.Session.GetInt32("PlayerId");
-            IsLoggedIn = id.HasValue;
+            PlayerId = HttpContext.Session.GetInt32("PlayerId");
+            IsLoggedIn = PlayerId.HasValue;
             PlayerName = HttpContext.Session.GetString("PlayerName");
         }
     }

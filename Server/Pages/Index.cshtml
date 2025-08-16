@@ -11,14 +11,14 @@
         <div class="alert alert-success">Hello, <strong>@Model.PlayerName</strong>!</div>
 
         <div class="row g-3">
-            <!-- New Game -->
+            <!-- Start Playing (launches desktop client via custom protocol) -->
             <div class="col-sm-6 col-lg-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Start New Game</h5>
-                        <p class="card-text text-muted">We’ll wire this to the WinForms client later.</p>
+                        <h5 class="card-title">Start Playing</h5>
+                        <p class="card-text text-muted">Opens the desktop client. You’ll create new games from the client.</p>
                         <div class="mt-auto">
-                            <a class="btn btn-primary w-100" asp-page="/Games/Index">New Game</a>
+                            <a class="btn btn-primary w-100" href="connect4://new-game?playerId=@Model.PlayerId">Start Playing</a>
                         </div>
                     </div>
                 </div>
