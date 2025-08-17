@@ -20,11 +20,7 @@ A complete client–server **Connect Four** system built for the course project 
 - [Database & Migrations](#database--migrations)  
 - [Running the Projects](#running-the-projects)  
 - [Features](#features)  
-- [Data Model](#data-model)  
 - [Client (WinForms)](#client-winforms)  
-- [Validation & Error Handling](#validation--error-handling)  
-- [Logging](#logging)  
-- [Troubleshooting](#troubleshooting)  
 - [Credits](#credits)
 
 ---
@@ -85,12 +81,9 @@ Edit `Server/appsettings.Development.json`:
   }
 }
 ```
-
-### 2) Apply Migrations & Run (Server)
+### 2) Run Server
 ```bash
 cd Server
-dotnet restore
-dotnet ef database update
 dotnet run
 
 # Note the URL (usually http://localhost:5221)
@@ -102,7 +95,10 @@ cd ../Client
 dotnet build
 dotnet run
 ```
+Once the WinForm launches, close it right away.
 > The client’s `ApiClient` uses the server base URL (default `http://localhost:5221`). Change if needed.
+
+### 4) Launch the game at http://localhost:5221 (or the server URL you set).
 
 ---
 
@@ -117,18 +113,23 @@ dotnet run
 
 ## Database & Migrations
 
-- **Server DB** (SQL Server):
+- **Server DB** (SQL Server / LocalDB by default)
   - Entities: `Player`, `Game`, `Move`
-  - Use `dotnet ef database update` to create/update schema.
+  - **No manual step needed** for a fresh run — the server calls `Database.Migrate()` at startup and creates/updates the schema automatically.
+  - Use EF tools **only when you change the model**:
+    - Add migration:  
+      ```
+      cd Server
+      dotnet ef migrations add <Name>
+      ```
+    - Update DB manually (optional):  
+      ```
+      dotnet ef database update
+      ```
 
-- **Client Local DB** (SQLite):
+- **Client Local DB** (SQLite)
   - Entities: `ReplayGame`, `ReplayMove`
-  - Created on-demand by the client for saving replays.
-
-> If you change entities, add migrations in the right project:
-> - Server: run commands **from `Server/`**
-> - Client: run commands **from `Client/`**
-
+  - Created on demand by the client for saving replays; no manual steps needed.
 ---
 
 ## Running the Projects
@@ -148,6 +149,8 @@ dotnet run
 ```
 - Create a new game, play turns (animation), server replies automatically with a random legal move.
 - Save & select replays; playback with equal time spacing and identical visuals/colors.
+
+### Launch the game at http://localhost:5221 (or the server URL you set).
 
 ---
 
@@ -185,29 +188,6 @@ dotnet run
 
 ---
 
-## Data Model
-
-### Server DB (SQL Server)
-
-- **Player**  
-  `Id (PK)`, `UniqueNumber (1..1000, unique)`, `FirstName`, `Phone`, `Country`, `CreatedAt`
-
-- **Game**  
-  `Id (PK)`, `PlayerId (FK)`, `StartTime`, `EndTime?`, `DurationSec?`, `Result (enum: Unknown/Win/Loss/Draw)`, `Notes?`
-
-- **Move**  
-  `Id (PK)`, `GameId (FK)`, `TurnIndex`, `PlayerKind (enum: Human/Server)`, `Column (0..6)`, `Row (0..5)`
-
-### Client Local DB (SQLite)
-
-- **ReplayGame**  
-  `Id (PK)`, `GameId`, `PlayerId`, `StartedAt`, navigation `Moves[]`
-
-- **ReplayMove**  
-  `Id (PK)`, `ReplayGameId (FK)`, `TurnIndex`, `PlayerKind`, `Column`, `Row`
-
----
-
 ## Client (WinForms)
 
 - **Play**: Start a new game (client UI), click a column to drop your disc; server responds automatically with a legal random move.  
@@ -217,53 +197,6 @@ dotnet run
   - **Save** after a match ends, stored in SQLite.
   - **Replay selector**: filter by your player; shows `GameId`, start time, moves count, duration, result.
   - **Playback**: equal time spacing (not original timings), identical visuals/colors.
-
----
-
-## Validation & Error Handling
-
-- **Client-side** (Razor Register page):  
-  - Button disabled until all fields valid  
-  - jQuery Validate + Bootstrap 5 styles (no default/unfriendly text)
-
-- **Server-side**:
-  - Model binding messages customized in `Program.cs`
-  - Friendly HTML **Error** page for pages (`/Error`)
-  - API:
-    - **400**: automatic via `[ApiController]`  
-    - **404/405**: JSON `ProblemDetails` via middleware  
-    - **500**: JSON `ProblemDetails` via `ApiExceptionFilter` (with `traceId`)
-
----
-
-## Logging
-
-Key actions are logged with structured messages:
-- `GamesController`: create, list by player, delete  
-- `MovesController`: human move, illegal move, server reply, game end  
-
-Use these logs to trace demo issues quickly.
-
----
-
-## Troubleshooting
-
-- **EF Tools missing**:  
-  `dotnet tool install -g dotnet-ef`
-
-- **SQL Server connection**:  
-  Ensure `(localdb)\MSSQLLocalDB` exists or update the connection string in `appsettings.Development.json`.
-
-- **Port already in use**:  
-  Edit `Properties/launchSettings.json` or stop the conflicting process.
-
-- **Client can’t reach server**:  
-  - Verify server URL and port.  
-  - Update client’s `ApiClient` base URL.  
-  - Make sure server is running before launching client.
-
-- **API returns HTML**:  
-  Confirm the request path starts with `/api/...`. Non-API routes intentionally return the HTML Error page.
 
 ---
 
