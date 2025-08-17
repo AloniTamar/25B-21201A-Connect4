@@ -1,58 +1,139 @@
-﻿@page "/about"
-@model Server.Pages.AboutModel
+﻿@page
 @{
     ViewData["Title"] = "About";
 }
 
-<div class="container mt-4">
-    <div class="row g-4">
-        <div class="col-12">
-            <h2 class="mb-3">About this project</h2>
-            <p class="text-muted mb-4">@Model.Description</p>
-        </div>
+<div class="container my-4 my-md-5">
 
-        <div class="col-12 col-lg-7">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Project Summary</h5>
-                    <ul class="mb-0">
-                        <li><strong>Server:</strong> ASP.NET Core Razor Pages + Web API, EF Core, SQL Server</li>
-                        <li><strong>Client:</strong> C# WinForms with GDI+ animations (disc drop, shine)</li>
-                        <li><strong>Gameplay:</strong> Human vs. server (server plays legal random moves)</li>
-                        <li><strong>Persistence:</strong> Games/moves in SQL Server; local replays in SQLite</li>
-                        <li><strong>Replay:</strong> Equal-time playback with identical visuals/colors</li>
-                        <li><strong>Queries/Admin:</strong> Players & games lists, counts, groupings, update/delete</li>
-                    </ul>
-                </div>
+    <div class="about-hero mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Connect4 — Client–Server (.NET)</h1>
+                <p class="mb-0">A complete Connect Four system for Course 10212 • Semester B • 2025.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge rounded-pill px-3 py-2">Server: .NET 9</span>
+                <span class="badge rounded-pill px-3 py-2">Client: .NET 8 (WinForms)</span>
+                <span class="badge rounded-pill px-3 py-2">EF Core</span>
+                <span class="badge rounded-pill px-3 py-2">SQL Server + SQLite</span>
             </div>
         </div>
+    </div>
 
+    <div class="row g-4 g-lg-4 mb-4">
+        <div class="col-12 col-lg-7">
+            <div class="glass-card p-3 p-md-4 h-100">
+                <div class="section-title" style="color: var(--brand);">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7-11-7Z" /></svg>
+                    </div>
+                    <h2 class="h5 mb-0 text-reset">Quick Start</h2>
+                </div>
+                <ol class="mb-0">
+                    <li class="mb-3">
+                        <strong>Run the server (first)</strong>
+                        <pre class="mb-2"><code>cd Server
+dotnet run</code></pre>
+                        <div class="muted">DB is created/updated automatically on first run (<code>Database.Migrate()</code>). Note the URL (usually <code>http://localhost:5221</code>).</div>
+                    </li>
+                    <li>
+                        <strong>Run the client (WinForms)</strong>
+                        <pre class="mb-2"><code>cd Client
+dotnet run</code></pre>
+                        <div class="muted">Default server URL: <code>http://localhost:5221</code>. You can override via the <code>CONNECT4_API</code> environment variable.</div>
+                    </li>
+                </ol>
+            </div>
+        </div>
         <div class="col-12 col-lg-5">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Details</h5>
-                    <dl class="row mb-0">
-                        <dt class="col-5">Project</dt>
-                        <dd class="col-7">@Model.ProjectName</dd>
+            <div class="glass-card p-3 p-md-4 h-100">
+                <div class="section-title" style="color: var(--brand);">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M9 5h6a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4Z" stroke="currentColor" stroke-width="2" /></svg>
+                    </div>
+                    <h2 class="h5 mb-0 text-reset">Tech Stack</h2>
+                </div>
+                <ul class="mb-0">
+                    <li><strong>Server:</strong> ASP.NET Core Razor Pages + Web API, EF Core, SQL Server (LocalDB), Bootstrap 5</li>
+                    <li><strong>Client:</strong> WinForms (GDI+ animations), EF Core SQLite (local replay DB)</li>
+                    <li><strong>Errors:</strong> HTML Error page (pages), JSON <code>ProblemDetails</code> (API)</li>
+                    <li><strong>Validation:</strong> Custom server checks (phone digits 9–10), Bootstrap messages</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-                        <dt class="col-5">Course</dt>
-                        <dd class="col-7">@Model.Course</dd>
+    <div class="glass-card p-3 p-md-4 mb-4">
+        <div class="section-title">
+            <div class="icon-circle">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l2 2 4-4M7 7h.01M7 13h.01M7 19h.01M11 7h6M11 13h6M11 19h6" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </div>
+            <h2 class="h5 mb-0">Features</h2>
+        </div>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <ul class="mb-0">
+                    <li><strong>Registration (website):</strong> Unique number (1–1000), first name, phone (digits only, 9–10), country dropdown.</li>
+                    <li><strong>Gameplay:</strong> Human vs server (random legal moves), turn enforcement, win/draw detection.</li>
+                    <li><strong>Replay (client):</strong> Save completed games to SQLite; equal-time playback with identical visuals/colors.</li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-6">
+                <ul class="mb-0">
+                    <li><strong>Queries & Admin:</strong> Players/games lists, last game date, counts by player, grouped by games played (3+, 2, 1, 0), by country.</li>
+                    <li><strong>Polish:</strong> Friendly error pages, JSON API errors, site-wide alerts, consistent validation, structured logging.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-                        <dt class="col-5">Authors</dt>
-                        <dd class="col-7">
-                            @for (int i = 0; i < Model.Authors.Length; i++)
-                            {
-                                <text>@Model.Authors[i]@(i < Model.Authors.Length - 1 ? ", " : "")</text>
-                            }
-                        </dd>
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="glass-card p-3 p-md-4 h-100">
+                <div class="section-title" style="color: var(--brand);">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="5" rx="7" ry="3" stroke="currentColor" stroke-width="2" /><path d="M5 5v8c0 1.66 3.13 3 7 3s7-1.34 7-3V5" stroke="currentColor" stroke-width="2" /></svg>
+                    </div>
+                    <h2 class="h5 mb-0 text-reset">Server DB</h2>
+                </div>
+                <ul class="mb-0">
+                    <li><code>Player</code>: <em>Id</em>, UniqueNumber, FirstName, Phone, Country, CreatedAt</li>
+                    <li><code>Game</code>: <em>Id</em>, PlayerId, StartTime, EndTime?, DurationSec?, Result</li>
+                    <li><code>Move</code>: <em>Id</em>, GameId, TurnIndex, PlayerKind, Column, Row</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="glass-card p-3 p-md-4 h-100">
+                <div class="section-title" style="color: var(--brand);">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M4 7a3 3 0 0 1 3-3h6l5 5v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7Z" stroke="currentColor" stroke-width="2" /><circle cx="12" cy="14" r="3" stroke="currentColor" stroke-width="2" /></svg>
+                    </div>
+                    <h2 class="h5 mb-0 text-reset">Client Replay DB (SQLite)</h2>
+                </div>
+                <ul class="mb-0">
+                    <li><code>ReplayGame</code>: <em>Id</em>, GameId, PlayerId, StartedAt, Moves[]</li>
+                    <li><code>ReplayMove</code>: <em>Id</em>, ReplayGameId (FK), TurnIndex, PlayerKind, Column, Row</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-                        <dt class="col-5">Repository</dt>
-                        <dd class="col-7">
-                            <a href="@Model.RepoUrl" target="_blank" rel="noopener">@Model.RepoUrl</a>
-                        </dd>
-                    </dl>
+    <div class="glass-card p-3 p-md-4">
+        <div class="row g-3 align-items-center">
+            <div class="col-12 col-md">
+                <div class="section-title">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 0 1 0-7l1.5-1.5a5 5 0 0 1 7 7L17 12" stroke="#22c55e" stroke-width="2" stroke-linecap="round" /><path d="M14 11a5 5 0 0 1 0 7L12.5 19.5a5 5 0 0 1-7-7L7 8" stroke="#22c55e" stroke-width="2" stroke-linecap="round" /></svg>
+                    </div>
+                    <h2 class="h6 mb-0">Links & Credits</h2>
+                </div>
+                <div class="small">
+                    <div><strong>Repo:</strong> <a href="https://github.com/AloniTamar/25B-21201A-Connect4" target="_blank" rel="noopener">GitHub</a></div>
+                    <div class="mt-2">Author: <strong>Tamar Aloni</strong> • Course 10212 • Semester B • 2025</div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>

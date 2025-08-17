@@ -3,56 +3,64 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Server</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - Connect4</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Server.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-md bg-white shadow-sm" style="border-bottom:2px solid var(--brand);">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Connect 4</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-page="/Index">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <rect x="1" y="1" width="22" height="22" rx="6" fill="var(--brand)" />
+                        <circle cx="9" cy="9" r="3.2" fill="#f59e0b" />
+                        <circle cx="15" cy="9" r="3.2" fill="#ef4444" />
+                        <circle cx="12" cy="15" r="3.2" fill="#0ea5e9" />
+                    </svg>
+                    <span>Connect4</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Players/Index">Players</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/Games/Index">Games</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-page="/About">About</a>
-                        </li>
+
+                <div id="mainNav" class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item"><a class="nav-link" asp-page="/Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Players/Index">Players</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Games/Index">Games</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/About">About</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+
+    <div class="container flex-grow-1">
         <partial name="_Alerts" />
-        <main role="main" class="pb-3">
+        <main role="main" class="py-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Server - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    <footer class="mt-auto border-top bg-white">
+        <div class="container py-3 d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div class="text-muted small">&copy; 2025 — Connect4</div>
+            <div class="small">
+                <a class="text-decoration-none me-3" asp-page="/About">About</a>
+                <a class="text-decoration-none" href="https://github.com/AloniTamar/25B-21201A-Connect4" target="_blank" rel="noopener">GitHub</a>
+            </div>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     <script>
         window.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => {
@@ -65,6 +73,7 @@
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
     <script src="~/js/validation-messages.js" asp-append-version="true"></script>
     <script src="~/js/validation-bootstrap.js" asp-append-version="true"></script>
 </body>

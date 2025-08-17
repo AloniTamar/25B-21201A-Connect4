@@ -1,53 +1,64 @@
 ﻿@page
 @model Server.Pages.Queries.Players.IndexModel
 @{
-    ViewData["Title"] = "Players – Full Details";
+    ViewData["Title"] = "Players — Full Details";
     var current = HttpContext.Request.Query["sort"].ToString();
     var nextSort = current == "name_desc" ? "name_asc" : "name_desc";
 }
 
-<div class="container mt-4">
-    <h2>Players – Full Details (case-insensitive sort)</h2>
-    <div class="mb-2">
-        <a class="btn btn-sm btn-outline-primary" asp-page="./Index" asp-route-sort="@nextSort">
-            Sort by Name (@(current == "name_desc" ? "↑" : "↓"))
-        </a>
+<div class="container my-4 my-md-5">
+
+    <div class="hero-card mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Players — Full Details</h1>
+                <p class="mb-0">Case-insensitive sort, edit and delete actions.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-light btn-lg" asp-page="/Players/Index">Back to Players</a>
+                <a class="btn btn-outline-light btn-lg"
+                   asp-page="./Index" asp-route-sort="@nextSort">
+                    Sort by Name (@(current == "name_desc" ? "↑" : "↓"))
+                </a>
+            </div>
+        </div>
     </div>
 
-    <table class="table table-striped table-sm">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Unique #</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Country</th>
-                <th>Created</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var p in Model.Players)
-            {
-                <tr>
-                    <td>@p.Id</td>
-                    <td>@p.UniqueNumber</td>
-                    <td>@p.FirstName</td>
-                    <td>@p.Phone</td>
-                    <td>@p.Country</td>
-                    <td>@p.CreatedAt.ToString("g")</td>
-                    <td>
-                        <a class="btn btn-sm btn-outline-secondary"
-                           asp-page="/Admin/Players/Edit" asp-route-id="@p.Id">Edit</a>
-                        <a class="btn btn-sm btn-outline-danger ms-1"
-                           asp-page="/Admin/Players/Delete" asp-route-id="@p.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div class="mb-3">
-        <a class="btn btn-outline-secondary" asp-page="/Players/Index">← Back to Players</a>
+    <div class="glass-card p-3 p-md-4">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Id</th>
+                        <th>Unique #</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Country</th>
+                        <th>Created</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Players)
+                    {
+                        <tr>
+                            <td>@p.Id</td>
+                            <td>@p.UniqueNumber</td>
+                            <td>@p.FirstName</td>
+                            <td>@p.Phone</td>
+                            <td>@p.Country</td>
+                            <td>@p.CreatedAt.ToString("g")</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   asp-page="/Admin/Players/Edit" asp-route-id="@p.Id">Edit</a>
+                                <a class="btn btn-sm btn-outline-danger ms-1"
+                                   asp-page="/Admin/Players/Delete" asp-route-id="@p.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
+
 </div>

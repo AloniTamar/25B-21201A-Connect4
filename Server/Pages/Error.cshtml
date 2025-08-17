@@ -4,32 +4,38 @@
     ViewData["Title"] = "Something went wrong";
 }
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
-            <div class="alert alert-danger shadow-sm" role="alert">
-                <h4 class="alert-heading mb-2">Oops — an error occurred</h4>
-                <p class="mb-2">
-                    We couldn’t complete your request. Please try again in a moment.
-                    If this keeps happening, contact support and include the Request ID below.
+<div class="container my-4 my-md-5">
+
+    <div class="hero-card mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Something went wrong</h1>
+                <p class="mb-0">
+                    We couldn’t complete your request. Please try again.
+                    If this keeps happening, contact support and include the details below.
                 </p>
-                <hr />
-                <ul class="mb-2">
-                    @if (Model.HttpStatus.HasValue)
-                    {
-                        <li><strong>Status:</strong> @Model.HttpStatus</li>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.OriginalPath))
-                    {
-                        <li><strong>Path:</strong> @Model.OriginalPath</li>
-                    }
-                    @if (Model.ShowRequestId)
-                    {
-                        <li><strong>Request ID:</strong> @Model.RequestId</li>
-                    }
-                </ul>
-                <a class="btn btn-primary" href="/">Go to Home</a>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-light btn-lg" asp-page="/Index">Go to Home</a>
             </div>
         </div>
     </div>
+
+    <div class="glass-card p-3 p-md-4">
+        <ul class="mb-0">
+            @if (Model.HttpStatus.HasValue)
+            {
+                <li><strong>Status:</strong> @Model.HttpStatus</li>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.OriginalPath))
+            {
+                <li><strong>Path:</strong> @Model.OriginalPath</li>
+            }
+            @if (Model.ShowRequestId)
+            {
+                <li><strong>Request ID:</strong> @Model.RequestId</li>
+            }
+        </ul>
+    </div>
+
 </div>

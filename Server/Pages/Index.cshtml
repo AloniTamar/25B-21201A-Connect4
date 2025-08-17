@@ -3,71 +3,126 @@
 @{
     ViewData["Title"] = "Home";
 }
-<div class="container mt-4">
-    <h2 class="mb-3">Connect Four</h2>
+
+<div class="container my-4 my-md-5">
+
+    <div class="hero-card mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Welcome to Connect4</h1>
+                <p class="mb-0">
+                    Play vs the server, save replays, and manage players and games.
+                    @if (Model.IsLoggedIn)
+                    {
+                        <text>Hello, <strong>@Model.PlayerName</strong>!</text>
+                    }
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                @if (!Model.IsLoggedIn)
+                {
+                    <a class="btn btn-light btn-lg" asp-page="/Auth/Register">Register</a>
+                    <a class="btn btn-outline-light btn-lg" asp-page="/Auth/Login">Login</a>
+                }
+                else
+                {
+                    <a class="btn btn-light btn-lg" href="connect4://new-game?playerId=@Model.PlayerId">Start Playing</a>
+                    <a class="btn btn-outline-light btn-lg" asp-page="/About">About</a>
+                }
+            </div>
+        </div>
+    </div>
 
     @if (Model.IsLoggedIn)
     {
-        <div class="alert alert-success">Hello, <strong>@Model.PlayerName</strong>!</div>
-
-        <div class="row g-3">
-            <!-- Start Playing (launches desktop client via custom protocol) -->
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Start Playing</h5>
-                        <p class="card-text text-muted">Opens the desktop client. You’ll create new games from the client.</p>
-                        <div class="mt-auto">
-                            <a class="btn btn-primary w-100" href="connect4://new-game?playerId=@Model.PlayerId">Start Playing</a>
+        <div class="row g-4">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="glass-card p-3 p-md-4 h-100">
+                    <div class="section-title">
+                        <div class="icon-circle">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7-11-7Z" fill="#0ea5e9" /></svg>
                         </div>
+                        <h2 class="h6 mb-0">Start Playing</h2>
+                    </div>
+                    <p class="mb-3 muted">Opens the desktop client via protocol. Create new games from the client UI.</p>
+                    <a class="btn btn-primary w-100" href="connect4://new-game?playerId=@Model.PlayerId">Start Playing</a>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="glass-card p-3 p-md-4 h-100">
+                    <div class="section-title">
+                        <div class="icon-circle">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="#6366f1" stroke-width="2" stroke-linecap="round" /></svg>
+                        </div>
+                        <h2 class="h6 mb-0">Players & Games</h2>
+                    </div>
+                    <p class="mb-3 muted">Browse players and games; manage records.</p>
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-outline-primary" asp-page="/Players/Index">Players</a>
+                        <a class="btn btn-outline-primary" asp-page="/Games/Index">Games</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Logout -->
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Logout</h5>
-                        <p class="card-text text-muted">End your current session.</p>
-                        <div class="mt-auto">
-                            <form method="post" asp-page="/Auth/Logout">
-                                <button type="submit" class="btn btn-outline-danger w-100">Logout</button>
-                            </form>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="glass-card p-3 p-md-4 h-100">
+                    <div class="section-title">
+                        <div class="icon-circle">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M9 5h6a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4Z" stroke="#ef4444" stroke-width="2" /></svg>
                         </div>
+                        <h2 class="h6 mb-0">Logout</h2>
                     </div>
+                    <p class="mb-3 muted">End your current session.</p>
+                    <form method="post" asp-page="/Auth/Logout">
+                        <button type="submit" class="btn btn-outline-danger w-100">Logout</button>
+                    </form>
                 </div>
             </div>
         </div>
     }
     else
     {
-        <div class="row g-3">
-            <!-- Register -->
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Register</h5>
-                        <p class="card-text text-muted">Create a new player (Unique # 1–1000).</p>
-                        <div class="mt-auto">
-                            <a class="btn btn-primary w-100" asp-page="/Auth/Register">Register</a>
+        <div class="row g-4">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="glass-card p-3 p-md-4 h-100">
+                    <div class="section-title">
+                        <div class="icon-circle">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="#6366f1" stroke-width="2" stroke-linecap="round" /></svg>
                         </div>
+                        <h2 class="h6 mb-0">Register</h2>
                     </div>
+                    <p class="mb-3 muted">Create a new player (Unique # 1–1000).</p>
+                    <a class="btn btn-outline-primary w-100" asp-page="/Auth/Register">Register</a>
                 </div>
             </div>
 
-            <!-- Login -->
-            <div class="col-sm-6 col-lg-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Login</h5>
-                        <p class="card-text text-muted">Login with your unique number.</p>
-                        <div class="mt-auto">
-                            <a class="btn btn-outline-primary w-100" asp-page="/Auth/Login">Login</a>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="glass-card p-3 p-md-4 h-100">
+                    <div class="section-title">
+                        <div class="icon-circle">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l2 2 4-4M7 7h.01M7 13h.01M7 19h.01M11 7h6M11 13h6M11 19h6" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         </div>
+                        <h2 class="h6 mb-0">Login</h2>
                     </div>
+                    <p class="mb-3 muted">Sign in with your unique number.</p>
+                    <a class="btn btn-outline-primary w-100" asp-page="/Auth/Login">Login</a>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="glass-card p-3 p-md-4 h-100">
+                    <div class="section-title">
+                        <div class="icon-circle">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M9 5h6a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4Z" stroke="#0ea5e9" stroke-width="2" /></svg>
+                        </div>
+                        <h2 class="h6 mb-0">About</h2>
+                    </div>
+                    <p class="mb-3 muted">Project overview, stack, and how to run.</p>
+                    <a class="btn btn-outline-primary w-100" asp-page="/About">Learn More</a>
                 </div>
             </div>
         </div>
     }
+
 </div>

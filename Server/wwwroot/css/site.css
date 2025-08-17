@@ -1,31 +1,138 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Focus ring follows brand */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--brand);
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
 }
+
+/* === Shared design tokens & Bootstrap tie-in === */
+:root {
+    --brand: #244a80; /* app main color */
+    --card-bg: rgba(255,255,255,.85);
+    --card-border: rgba(0,0,0,.06);
+    --muted: #6b7280;
+    --shadow-lg: 0 12px 30px rgba(0,0,0,.15);
+    --shadow-md: 0 8px 24px rgba(0,0,0,.08);
+    --bs-primary: var(--brand);
+}
+
+/* Reusable sections/cards */
+.hero-card,
+.about-hero {
+    background: var(--brand);
+    color: #fff;
+    border-radius: 1.25rem;
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    box-shadow: var(--shadow-lg);
+}
+
+    .badge.glass,
+    .about-hero .badge {
+        background: rgba(255,255,255,.2);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255,255,255,.25);
+    }
+
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--card-border);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+}
+
+/* Titles & icons */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .75rem;
+}
+
+.icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: #f1f5f9;
+}
+
+    .icon-circle svg {
+        width: 20px;
+        height: 20px;
+    }
+
+.muted {
+    color: var(--muted);
+}
+
+code {
+    font-size: .95rem;
+}
+
+/* Buttons & links in brand */
+.btn-primary {
+    background-color: var(--brand);
+    border-color: var(--brand);
+}
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+        background-color: var(--brand);
+        border-color: var(--brand);
+        opacity: .9;
+    }
+
+.btn-outline-primary {
+    color: var(--brand);
+    border-color: var(--brand);
+}
+
+    .btn-outline-primary:hover,
+    .btn-outline-primary:focus {
+        background-color: var(--brand);
+        border-color: var(--brand);
+        color: #fff;
+    }
+
+.link-primary {
+    color: var(--brand);
+}
+
+    .link-primary:hover {
+        color: var(--brand);
+        opacity: .85;
+    }

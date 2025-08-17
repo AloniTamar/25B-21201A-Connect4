@@ -3,25 +3,40 @@
 @{
     ViewData["Title"] = "Login";
 }
-<div class="container mt-4">
-    <h2>Login</h2>
 
-    <form method="post" class="row g-3">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container my-4 my-md-5">
 
-        <div class="col-md-4">
-            <label asp-for="Input.UniqueNumber" class="form-label"></label>
-            <input asp-for="Input.UniqueNumber" class="form-control" />
-            <span asp-validation-for="Input.UniqueNumber" class="text-danger"></span>
+    <div class="hero-card mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Login</h1>
+                <p class="mb-0">Sign in with your unique number.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-light btn-lg" asp-page="/Auth/Register">Register</a>
+            </div>
         </div>
+    </div>
 
-        <input type="hidden" asp-for="Input.Next" />
+    <div class="glass-card p-3 p-md-4">
+        <form method="post" class="row g-3" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a asp-page="/Index" class="btn btn-outline-secondary">Cancel</a>
-        </div>
-    </form>
+            <div class="col-md-4">
+                <label asp-for="Input.UniqueNumber" class="form-label"></label>
+                <input asp-for="Input.UniqueNumber" class="form-control" type="number" min="1" max="1000" required />
+                <span asp-validation-for="Input.UniqueNumber" class="text-danger"></span>
+            </div>
+
+            <input type="hidden" asp-for="Input.Next" />
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a asp-page="/Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
 </div>
 
 @section Scripts {

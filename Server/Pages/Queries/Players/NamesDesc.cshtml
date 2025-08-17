@@ -1,30 +1,43 @@
 ﻿@page
 @model Server.Pages.Queries.Players.NamesDescModel
 @{
-    ViewData["Title"] = "Players – Names (DESC, case-sensitive)";
+    ViewData["Title"] = "Players — Names (DESC, case-sensitive)";
 }
 
-<div class="container mt-4">
-    <h2>Players – Names (DESC, case-sensitive) &amp; Last Game Date</h2>
-    <table class="table table-striped table-sm w-auto">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Last Game Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model.Items)
-            {
-                <tr>
-                    <td>@r.Name</td>
-                    <td>@(r.LastGameDate?.ToString("g") ?? "-")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="container my-4 my-md-5">
 
-    <div class="mb-3">
-        <a class="btn btn-outline-secondary" asp-page="/Players/Index">← Back to Players</a>
+    <div class="hero-card mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Players — Names (DESC, case-sensitive)</h1>
+                <p class="mb-0">Names sorted descending with last game date.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-light btn-lg" asp-page="/Players/Index">Back to Players</a>
+            </div>
+        </div>
     </div>
+
+    <div class="glass-card p-3 p-md-4">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped align-middle w-auto">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Last Game Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.Items)
+                    {
+                        <tr>
+                            <td>@r.Name</td>
+                            <td>@(r.LastGameDate?.ToString("g") ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>

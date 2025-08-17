@@ -1,37 +1,49 @@
 ﻿@page
 @model Server.Pages.Queries.Games.DistinctModel
 @{
-    ViewData["Title"] = "Games – Distinct by Player";
+    ViewData["Title"] = "Games — Distinct by Player";
 }
-<div class="container mt-4">
-    <h2>Games – Distinct (one per player, latest)</h2>
-    <p class="text-muted">Duplicates are defined as “same player played them”. We keep the latest game per player.</p>
 
-    <table class="table table-striped table-sm">
-        <thead>
-            <tr>
-                <th>GameId</th>
-                <th>PlayerId</th>
-                <th>Player</th>
-                <th>Start</th>
-                <th>Result</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model.Items)
-            {
-                <tr>
-                    <td>@r.GameId</td>
-                    <td>@r.PlayerId</td>
-                    <td>@r.PlayerName</td>
-                    <td>@r.StartTime.ToString("g")</td>
-                    <td>@r.Result</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="container my-4 my-md-5">
 
-    <div class="mb-3">
-        <a class="btn btn-outline-secondary" asp-page="/Games/Index">← Back to Games</a>
+    <div class="hero-card mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Games — Distinct (one per player, latest)</h1>
+                <p class="mb-0">Duplicates are “same player played them”. Showing the latest game per player.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-light btn-lg" asp-page="/Games/Index">Back to Games</a>
+            </div>
+        </div>
     </div>
+
+    <div class="glass-card p-3 p-md-4">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>GameId</th>
+                        <th>PlayerId</th>
+                        <th>Player</th>
+                        <th>Start</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.Items)
+                    {
+                        <tr>
+                            <td>@r.GameId</td>
+                            <td>@r.PlayerId</td>
+                            <td>@r.PlayerName</td>
+                            <td>@r.StartTime.ToString("g")</td>
+                            <td>@r.Result</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>

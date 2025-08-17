@@ -2,47 +2,57 @@
 @{
     ViewData["Title"] = "Players";
 }
-<div class="container mt-4">
-    <h2 class="mb-4">Players</h2>
 
-    <div class="row g-3">
-        <!-- Admin information card → Players (full) -->
-        <div class="col-sm-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Admin – Players (Full)</h5>
-                    <p class="card-text text-muted">View all player details with sorting. Includes edit & delete actions.</p>
-                    <div class="mt-auto">
-                        <a class="btn btn-primary w-100" asp-page="/Queries/Players/Index">Open</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container my-4 my-md-5">
 
-        <!-- Games information card → Players (name, CS) -->
-        <div class="col-sm-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Players (Name ↓, Case-Sensitive)</h5>
-                    <p class="card-text text-muted">Names only, sorted descending (case-sensitive) with last game date.</p>
-                    <div class="mt-auto">
-                        <a class="btn btn-primary w-100" asp-page="/Queries/Players/NamesDesc">Open</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Players by country -->
-        <div class="col-sm-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Players by Country</h5>
-                    <p class="card-text text-muted">Group players per country; includes players with zero games.</p>
-                    <div class="mt-auto">
-                        <a class="btn btn-primary w-100" asp-page="/Queries/Stats/ByCountry">Open</a>
-                    </div>
-                </div>
+    <div class="hero-card mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Players</h1>
+                <p class="mb-0">Browse players, grouping, and admin actions.</p>
             </div>
         </div>
     </div>
+
+    <div class="row g-4">
+        <div class="col-sm-6 col-lg-4">
+            <div class="glass-card p-3 p-md-4 h-100">
+                <div class="section-title">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="#6366f1" stroke-width="2" stroke-linecap="round" /></svg>
+                    </div>
+                    <h2 class="h6 mb-0">Admin — Players (Full)</h2>
+                </div>
+                <p class="mb-3 muted">View all details with sorting, edit and delete actions.</p>
+                <a class="btn btn-outline-primary w-100" asp-page="/Queries/Players/Index">Open</a>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-4">
+            <div class="glass-card p-3 p-md-4 h-100">
+                <div class="section-title">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l2 2 4-4M7 7h.01M7 13h.01M7 19h.01M11 7h6M11 13h6M11 19h6" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </div>
+                    <h2 class="h6 mb-0">Names ↓ (Case-Sensitive)</h2>
+                </div>
+                <p class="mb-3 muted">Names only, sorted descending with last game date.</p>
+                <a class="btn btn-outline-primary w-100" asp-page="/Queries/Players/NamesDesc">Open</a>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-4">
+            <div class="glass-card p-3 p-md-4 h-100">
+                <div class="section-title">
+                    <div class="icon-circle">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M9 5h6a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4Z" stroke="#0ea5e9" stroke-width="2" /></svg>
+                    </div>
+                    <h2 class="h6 mb-0">Players by Country</h2>
+                </div>
+                <p class="mb-3 muted">Group players per country, including players with zero games.</p>
+                <a class="btn btn-outline-primary w-100" asp-page="/Queries/Stats/ByCountry">Open</a>
+            </div>
+        </div>
+    </div>
+
 </div>

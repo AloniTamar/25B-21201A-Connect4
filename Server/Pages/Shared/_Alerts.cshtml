@@ -1,18 +1,17 @@
-﻿@* Renders TempData["Msg"] / TempData["Err"] as Bootstrap alerts *@
-@{
+﻿@{
     var msg = TempData["Msg"] as string;
     var err = TempData["Err"] as string;
 }
 @if (!string.IsNullOrWhiteSpace(msg))
 {
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm" role="alert">
         @msg
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 @if (!string.IsNullOrWhiteSpace(err))
 {
-    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show mt-3 shadow-sm" role="alert">
         @err
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>

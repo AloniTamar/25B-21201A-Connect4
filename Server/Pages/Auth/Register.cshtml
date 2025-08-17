@@ -4,51 +4,67 @@
 @{
     ViewData["Title"] = "Register";
 }
-<div class="container mt-4">
-    <h2>Register</h2>
 
-    <form method="post" id="registerForm" class="row g-3" novalidate>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container my-4 my-md-5">
 
-        <div class="col-md-3">
-            <label asp-for="Input.UniqueNumber" class="form-label"></label>
-            <input asp-for="Input.UniqueNumber" class="form-control" type="number" min="1" max="1000" required />
-            <div class="form-text">Choose a unique number between 1-1000.</div>
-            <span asp-validation-for="Input.UniqueNumber" class="text-danger"></span>
+    <div class="hero-card mb-4 mb-md-5">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h1 class="h2 mb-2">Register</h1>
+                <p class="mb-0">Create a new player to start playing.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-light btn-lg" asp-page="/Auth/Login">Login</a>
+            </div>
         </div>
+    </div>
 
-        <div class="col-md-5">
-            <label asp-for="Input.FirstName" class="form-label"></label>
-            <input asp-for="Input.FirstName" class="form-control" required />
-            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-        </div>
+    <div class="glass-card p-3 p-md-4">
+        <form method="post" id="registerForm" class="row g-3" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="col-md-4">
-            <label asp-for="Input.Phone" class="form-label"></label>
-            <input asp-for="Input.Phone"
-                   class="form-control"
-                   type="tel"
-                   inputmode="numeric"
-                   pattern="\d{9,10}"
-                   minlength="9"
-                   maxlength="10" />
-            <span asp-validation-for="Input.Phone" class="text-danger"></span>
-        </div>
+            <div class="col-md-3">
+                <label asp-for="Input.UniqueNumber" class="form-label"></label>
+                <input asp-for="Input.UniqueNumber" class="form-control" type="number" min="1" max="1000" required />
+                <div class="form-text">Choose a unique number between 1–1000.</div>
+                <span asp-validation-for="Input.UniqueNumber" class="text-danger"></span>
+            </div>
 
-        <div class="col-md-4">
-            <label asp-for="Input.Country" class="form-label"></label>
-            <select asp-for="Input.Country" asp-items="Model.CountryOptions" class="form-select" required>
-                <option value="">-- Select country --</option>
-            </select>
-            <span asp-validation-for="Input.Country" class="text-danger"></span>
-        </div>
+            <div class="col-md-5">
+                <label asp-for="Input.FirstName" class="form-label"></label>
+                <input asp-for="Input.FirstName" class="form-control" required />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
 
-        <div class="col-12">
-            <button type="submit" id="btnRegister" class="btn btn-primary" disabled>Register</button>
-            <a asp-page="/Index" class="btn btn-outline-secondary">Cancel</a>
-            <a asp-page="/Auth/Login" class="btn btn-link">Already have an account? Login</a>
-        </div>
-    </form>
+            <div class="col-md-4">
+                <label asp-for="Input.Phone" class="form-label"></label>
+                <input asp-for="Input.Phone"
+                       class="form-control"
+                       type="tel"
+                       inputmode="numeric"
+                       pattern="\d{9,10}"
+                       minlength="9"
+                       maxlength="10" />
+                <span class="form-text">Digits only; 9–10 digits.</span>
+                <span asp-validation-for="Input.Phone" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Input.Country" class="form-label"></label>
+                <select asp-for="Input.Country" asp-items="Model.CountryOptions" class="form-select" required>
+                    <option value="">-- Select country --</option>
+                </select>
+                <span asp-validation-for="Input.Country" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" id="btnRegister" class="btn btn-primary" disabled>Register</button>
+                <a asp-page="/Index" class="btn btn-outline-secondary">Cancel</a>
+                <a asp-page="/Auth/Login" class="btn btn-link">Have an account? Login</a>
+            </div>
+        </form>
+    </div>
+
 </div>
 
 @section Scripts {
