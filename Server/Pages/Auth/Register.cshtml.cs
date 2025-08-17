@@ -60,20 +60,23 @@ namespace Server.Pages.Auth
             // Keep dropdown populated on validation errors
             PopulateCountries(Input.Country);
 
-            // Basic server-side validation
-            if (!ModelState.IsValid)
-                return Page();
-
-            // Normalize/trims (defensive)
+            // Normalize/trims
             var unique = Input.UniqueNumber;
             var first = (Input.FirstName ?? "").Trim();
-            var phone = (Input.Phone ?? "").Trim();
+            var phoneRaw = (Input.Phone ?? "").Trim();
             var country = (Input.Country ?? "").Trim();
 
-            if (string.IsNullOrWhiteSpace(first))
-                ModelState.AddModelError(nameof(Input.FirstName), "First name is required.");
-            if (string.IsNullOrWhiteSpace(phone))
-                ModelState.AddModelError(nameof(Input.Phone), "Phone is required.");
+            if (string.IsNullOrWhiteSpace(first) || first.Length < 2)
+                ModelState.AddModelError(nameof(Input.FirstName), "First name must be at least 2 letters.");
+
+            if (unique < 1 || unique > 1000)
+                ModelState.AddModelError(nameof(Input.UniqueNumber), "Unique number must be between 1 and 1000.");
+
+            // Keep digits only, and enforce 9–10 digits
+            var phoneDigits = new string(phoneRaw.Where(char.IsDigit).ToArray());
+            if (phoneDigits.Length < 9 || phoneDigits.Length > 10)
+                ModelState.AddModelError(nameof(Input.Phone), "Phone must be digits only (9–10 digits).");
+
             if (string.IsNullOrWhiteSpace(country))
                 ModelState.AddModelError(nameof(Input.Country), "Country is required.");
 
@@ -94,10 +97,9 @@ namespace Server.Pages.Auth
                 return Page();
             }
 
-            // Insert (raw SQL as in your version)
             await _db.Database.ExecuteSqlInterpolatedAsync($@"
                 INSERT INTO Players (UniqueNumber, FirstName, Phone, Country, CreatedAt)
-                VALUES ({unique}, {first}, {phone}, {country}, SYSUTCDATETIME());
+                VALUES ({unique}, {first}, {phoneDigits}, {country}, SYSUTCDATETIME());
             ");
 
             // Load the newly created player
