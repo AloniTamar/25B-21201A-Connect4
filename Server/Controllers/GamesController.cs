@@ -26,11 +26,12 @@ public class GamesController : ControllerBase
     public class CreateGameResponse
     {
         public int GameId { get; set; }
-        public int[][] Board { get; set; } = Enumerable
-            .Range(0, 6)
-            .Select(_ => new int[7])
-            .ToArray();
+        public int[][] Board { get; set; } = Enumerable.Range(0, 6).Select(_ => new int[7]).ToArray();
         public string Status { get; set; } = "Playing";
+        public int PlayerUniqueNumber { get; set; }
+        public string PlayerFirstName { get; set; } = "";
+        public string? PlayerPhone { get; set; }
+        public string? PlayerCountry { get; set; }
     }
 
     [HttpPost]

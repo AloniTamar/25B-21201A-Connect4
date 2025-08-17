@@ -11,6 +11,10 @@
         public int GameId { get; set; }
         public int[][] Board { get; set; } = [];
         public string Status { get; set; } = string.Empty;
+        public int PlayerUniqueNumber { get; set; }
+        public string PlayerFirstName { get; set; } = "";
+        public string? PlayerPhone { get; set; }
+        public string? PlayerCountry { get; set; }
     }
 
     // POST /api/moves

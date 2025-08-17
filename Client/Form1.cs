@@ -169,6 +169,7 @@ namespace Client.WinForms
                     ShowError("No response from server.");
                     return;
                 }
+                SetStatusText($"Player #{resp.PlayerUniqueNumber} — {resp.PlayerFirstName} ({resp.PlayerCountry})");
                 _btnNew.Enabled = false;
                 _gameId = resp.GameId;
                 _board = resp.Board ?? EmptyBoard();

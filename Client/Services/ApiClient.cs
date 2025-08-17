@@ -8,11 +8,13 @@ namespace Client.WinForms.Services
     public class ApiClient
     {
         private readonly HttpClient _http;
-
-        // TODO: set your server base URL here (HTTP for now)
-        public ApiClient(string baseUrl = "http://localhost:5221")
+        public ApiClient(string? baseUrl = null)
         {
-            _http = new HttpClient { BaseAddress = new System.Uri(baseUrl) };
+            var url = baseUrl
+                      ?? Environment.GetEnvironmentVariable("CONNECT4_API")
+                      ?? "http://localhost:5221";
+
+            _http = new HttpClient { BaseAddress = new Uri(url) };
         }
 
         public Task<CreateGameResponse?> CreateGameAsync(int playerId)
