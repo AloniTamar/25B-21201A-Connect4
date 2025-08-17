@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -23,17 +24,17 @@ namespace Server.Pages.Auth
             [Required, StringLength(100)]
             public string FirstName { get; set; } = "";
 
-            [StringLength(50)]
-            public string? Phone { get; set; }
+            [Required, StringLength(50, ErrorMessage = "Phone is required (max 50).")]
+            public string Phone { get; set; } = "";
 
-            [StringLength(100)]
-            public string? Country { get; set; }
+            [Required, StringLength(100, ErrorMessage = "Country is required.")]
+            public string Country { get; set; } = "";
         }
 
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
-        // 🔽 Country dropdown options for the view
+        // Country dropdown options for the view
         public IList<SelectListItem> CountryOptions { get; private set; } = new List<SelectListItem>();
 
         private void PopulateCountries(string? selected = null)
@@ -56,29 +57,52 @@ namespace Server.Pages.Auth
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Ensure dropdown is populated on validation errors
+            // Keep dropdown populated on validation errors
             PopulateCountries(Input.Country);
 
-            if (!ModelState.IsValid) return Page();
+            // Basic server-side validation
+            if (!ModelState.IsValid)
+                return Page();
+
+            // Normalize/trims (defensive)
+            var unique = Input.UniqueNumber;
+            var first = (Input.FirstName ?? "").Trim();
+            var phone = (Input.Phone ?? "").Trim();
+            var country = (Input.Country ?? "").Trim();
+
+            if (string.IsNullOrWhiteSpace(first))
+                ModelState.AddModelError(nameof(Input.FirstName), "First name is required.");
+            if (string.IsNullOrWhiteSpace(phone))
+                ModelState.AddModelError(nameof(Input.Phone), "Phone is required.");
+            if (string.IsNullOrWhiteSpace(country))
+                ModelState.AddModelError(nameof(Input.Country), "Country is required.");
+
+            // Ensure selected country is from the dropdown
+            var allowedCountries = CountryOptions.Select(o => o.Value).ToHashSet();
+            if (!allowedCountries.Contains(country))
+                ModelState.AddModelError(nameof(Input.Country), "Please choose a country from the list.");
+
+            if (!ModelState.IsValid)
+                return Page();
 
             // Uniqueness check
             var exists = await _db.Players.AsNoTracking()
-                .AnyAsync(p => p.UniqueNumber == Input.UniqueNumber);
+                .AnyAsync(p => p.UniqueNumber == unique);
             if (exists)
             {
                 ModelState.AddModelError(nameof(Input.UniqueNumber), "That unique number is already taken.");
                 return Page();
             }
 
-            // Insert without referencing the entity type directly
-            var rows = await _db.Database.ExecuteSqlInterpolatedAsync($@"
+            // Insert (raw SQL as in your version)
+            await _db.Database.ExecuteSqlInterpolatedAsync($@"
                 INSERT INTO Players (UniqueNumber, FirstName, Phone, Country, CreatedAt)
-                VALUES ({Input.UniqueNumber}, {Input.FirstName}, {Input.Phone}, {Input.Country}, SYSUTCDATETIME());
+                VALUES ({unique}, {first}, {phone}, {country}, SYSUTCDATETIME());
             ");
 
             // Load the newly created player
             var player = await _db.Players.AsNoTracking()
-                .FirstOrDefaultAsync(p => p.UniqueNumber == Input.UniqueNumber);
+                .FirstOrDefaultAsync(p => p.UniqueNumber == unique);
 
             if (player == null)
             {
@@ -86,15 +110,26 @@ namespace Server.Pages.Auth
                 return RedirectToPage("/Auth/Register");
             }
 
-            // Auto-login
+            // Extract Id/Name safely
             var idProp = player.GetType().GetProperty("Id");
             var nameProp = player.GetType().GetProperty("FirstName");
-
             var id = (int)(idProp?.GetValue(player) ?? 0);
             var name = (string?)nameProp?.GetValue(player) ?? "";
 
+            // Session sign-in (keeps your existing behavior)
             HttpContext.Session.SetInt32("PlayerId", id);
             HttpContext.Session.SetString("PlayerName", name);
+
+            // Also set short cookies, in case your layout/home checks cookies
+            var opts = new CookieOptions
+            {
+                HttpOnly = true,
+                IsEssential = true,
+                SameSite = SameSiteMode.Lax
+            };
+            Response.Cookies.Append("PlayerId", id.ToString(), opts);
+            Response.Cookies.Append("PlayerName", name, opts);
+            Response.Cookies.Append("Identifier", id.ToString(), opts); // if your home uses Identifier
 
             TempData["Msg"] = $"Welcome, {name}! Your account was created.";
             return RedirectToPage("/Index");
