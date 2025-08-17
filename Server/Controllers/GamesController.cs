@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Server.Data;
 
 namespace Server.Controllers;
@@ -9,7 +10,13 @@ namespace Server.Controllers;
 public class GamesController : ControllerBase
 {
     private readonly AppDbContext _db;
-    public GamesController(AppDbContext db) => _db = db;
+    private readonly ILogger<GamesController> _log;
+
+    public GamesController(AppDbContext db, ILogger<GamesController> log)
+    {
+        _db = db;
+        _log = log;
+    }
 
     public class CreateGameRequest
     {
@@ -29,21 +36,25 @@ public class GamesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<CreateGameResponse>> Create([FromBody] CreateGameRequest req)
     {
-        // Validate player exists
+        _log.LogInformation("Create game requested: PlayerId={PlayerId}", req.PlayerId);
+
         var playerExists = await _db.Players.AnyAsync(p => p.Id == req.PlayerId);
         if (!playerExists)
+        {
+            _log.LogWarning("Create game failed: player not found. PlayerId={PlayerId}", req.PlayerId);
             return BadRequest(new { message = "Player not found." });
+        }
 
         var game = new Game { PlayerId = req.PlayerId };
         _db.Games.Add(game);
         await _db.SaveChangesAsync();
 
+        _log.LogInformation("Game created: GameId={GameId}, PlayerId={PlayerId}", game.Id, game.PlayerId);
+
         return CreatedAtAction(nameof(Create), new { id = game.Id }, new CreateGameResponse
         {
             GameId = game.Id,
-            Board = Enumerable.Range(0, 6)
-                .Select(_ => Enumerable.Repeat(0, 7).ToArray())
-                .ToArray(),
+            Board = Enumerable.Range(0, 6).Select(_ => Enumerable.Repeat(0, 7).ToArray()).ToArray(),
             Status = "Playing"
         });
     }
@@ -51,8 +62,14 @@ public class GamesController : ControllerBase
     [HttpGet("by-player/{playerId:int}")]
     public async Task<ActionResult<object>> GetByPlayer(int playerId)
     {
+        _log.LogDebug("Get games by player requested: PlayerId={PlayerId}", playerId);
+
         var exists = await _db.Players.AnyAsync(p => p.Id == playerId);
-        if (!exists) return NotFound(new { message = "Player not found." });
+        if (!exists)
+        {
+            _log.LogWarning("GetByPlayer: player not found. PlayerId={PlayerId}", playerId);
+            return NotFound(new { message = "Player not found." });
+        }
 
         var games = await _db.Games
             .Where(g => g.PlayerId == playerId)
@@ -69,17 +86,26 @@ public class GamesController : ControllerBase
             })
             .ToListAsync();
 
+        _log.LogInformation("GetByPlayer: found {Count} games for PlayerId={PlayerId}", games.Count, playerId);
         return Ok(games);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _log.LogInformation("Delete game requested: GameId={GameId}", id);
+
         var game = await _db.Games.FindAsync(id);
-        if (game == null) return NotFound(new { message = "Game not found." });
+        if (game == null)
+        {
+            _log.LogWarning("Delete game failed: not found. GameId={GameId}", id);
+            return NotFound(new { message = "Game not found." });
+        }
 
         _db.Games.Remove(game);
         await _db.SaveChangesAsync();
+
+        _log.LogWarning("Game deleted: GameId={GameId}", id);
         return NoContent();
     }
 }

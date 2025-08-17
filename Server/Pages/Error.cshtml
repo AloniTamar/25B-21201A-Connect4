@@ -1,5 +1,5 @@
 ﻿@page
-@model ConnectFourWeb.Pages.ErrorModel
+@model Server.Pages.ErrorModel
 @{
     ViewData["Title"] = "Something went wrong";
 }
@@ -15,9 +15,9 @@
                 </p>
                 <hr />
                 <ul class="mb-2">
-                    @if (Model.StatusCode.HasValue)
+                    @if (Model.HttpStatus.HasValue)
                     {
-                        <li><strong>Status:</strong> @Model.StatusCode</li>
+                        <li><strong>Status:</strong> @Model.HttpStatus</li>
                     }
                     @if (!string.IsNullOrWhiteSpace(Model.OriginalPath))
                     {

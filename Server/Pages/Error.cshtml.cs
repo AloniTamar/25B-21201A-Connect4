@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
-namespace ConnectFourWeb.Pages
+namespace Server.Pages
 {
     public class ErrorModel : PageModel
     {
@@ -10,7 +11,7 @@ namespace ConnectFourWeb.Pages
         public ErrorModel(ILogger<ErrorModel> logger) => _logger = logger;
 
         public string? RequestId { get; set; }
-        public int? StatusCode { get; set; }
+        public int? HttpStatus { get; set; }   // renamed to avoid hiding PageModel.StatusCode(int)
         public string? OriginalPath { get; set; }
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
@@ -18,11 +19,11 @@ namespace ConnectFourWeb.Pages
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
 
-            // Unhandled exceptions:
+            // Unhandled exceptions
             var exFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             if (exFeature != null)
             {
-                StatusCode = 500;
+                HttpStatus = 500;
                 OriginalPath = exFeature.Path;
                 _logger.LogError(exFeature.Error,
                     "Unhandled exception at {Path}. RequestId={RequestId}",
@@ -30,13 +31,13 @@ namespace ConnectFourWeb.Pages
                 return;
             }
 
-            // Re-executed 4xx/5xx:
+            // Re-executed 4xx/5xx
             var reexec = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
-            StatusCode = code ?? HttpContext.Response?.StatusCode;
+            HttpStatus = code ?? HttpContext.Response?.StatusCode;
             OriginalPath = reexec?.OriginalPath ?? HttpContext.Request.Path;
 
             _logger.LogWarning("HTTP {Status} at {Path}. RequestId={RequestId}",
-                StatusCode, OriginalPath, RequestId);
+                HttpStatus, OriginalPath, RequestId);
         }
     }
 }
